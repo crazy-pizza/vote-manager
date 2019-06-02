@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，
+     你会看到log4j2内部各种详细输出。可以设置成OFF(关闭) 或 Error(只输出错误信息)。
+     30s 刷新此配置
+-->
+<configuration status="WARN" monitorInterval="30">
+    <!-- 日志文件目录、压缩文件目录、日志格式配置 -->
+    <properties>
+        <Property name="fileName">/home/logs/vote-manager/</Property>
+        <!--<Property name="fileGz">/home/logs/supplychain-basic-service/7z</Property>-->
+        <Property name="LOG_PATTERN">[%X{traceID}] %highlight{%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{1.}:%L - %msg%n}{%throwable{short.fileName}}{FATAL=white,ERROR=red,WARN=blue, INFO=black, DEBUG=green, TRACE=blue}</Property>
+        <Property name="COUNTER_PATTERN">%m%n</Property>
+    </properties>
+
+    <Appenders>
+        <!-- 输出控制台日志的配置 -->
+        <Console name="console" target="SYSTEM_OUT">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!-- 输出日志的格式 -->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        <!-- 打印出所有的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档 -->
+        <RollingRandomAccessFile name="infoFile" fileName="${fileName}/${hostName}_info.log" immediateFlush="false"
+                                 filePattern="${fileName}/${hostName}_info.%d-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <SizeBasedTriggeringPolicy size="2048MB"/>
+            </Policies>
+            <Filters>
+                <!-- 只记录info和error级别信息 -->
+                <ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingRandomAccessFile>
+
+        <!-- 存储所有error信息 -->
+        <RollingRandomAccessFile name="errorFile" fileName="${fileName}/${hostName}_error.log" immediateFlush="false"
+                                 filePattern="${fileName}/${hostName}_error.%d.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+            </Policies>
+
+            <Filters>
+                <!-- 只记录error级别信息 -->
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+
+        </RollingRandomAccessFile>
+
+        <!-- 打印出所有的sql信息-->
+        <RollingRandomAccessFile name="sqlFile" fileName="${fileName}/${hostName}_sqlFile.log" immediateFlush="false"
+                                 filePattern="${fileName}/${hostName}_sqlFile.%d.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+            </Policies>
+            <Filters>
+                <!-- 只记录info和error级别信息 -->
+                <ThresholdFilter level="info" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingRandomAccessFile>
+
+    </Appenders>
+
+    <!-- Mixed sync/async -->
+    <Loggers>
+        <logger name="com.hualala.supplychain.mapper" level="debug" additivity="false">
+            <AppenderRef ref="sqlFile"/>
+            <AppenderRef ref="console"/>
+        </logger>
+        <Logger name="counterLogger" level="INFO" additivity="true" includeLocation="true">
+            <AppenderRef ref="console"/>
+        </Logger>
+        <AsyncRoot level="INFO" includeLocation="true">
+            <AppenderRef ref="infoFile"/>
+            <AppenderRef ref="errorFile"/>
+            <AppenderRef ref="console"/>
+        </AsyncRoot>
+    </Loggers>
+
+</configuration>

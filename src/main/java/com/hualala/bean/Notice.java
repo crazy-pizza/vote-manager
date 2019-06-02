@@ -1,0 +1,1 @@
+package com.hualala.bean;import lombok.Data;@Datapublic class Notice {		private Long noticeID;//	private String noticeValue;//公告数据	private Long createTime;//创建时间	private Integer count;//要查询的公告数量}

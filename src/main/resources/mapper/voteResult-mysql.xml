@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hualala.mapper.VoteResultMapper">
+
+    <!-- voteResult table all fields -->
+    <sql id="Base_Column_List">
+		 voteResultID,voteID,voteDetailIDs,resultType,userID
+	</sql>
+
+    <!-- 查询条件 -->
+    <sql id="filterParams">
+        <where>
+            <trim prefixOverrides="and">
+                <if test="voteResultID != null and voteResultID != ''">
+                    AND voteResultID = #{voteResultID}
+                </if>
+                <if test="voteID != null and voteID != ''">
+                    AND voteID = #{voteID}
+                </if>
+                <if test="resultType != null and resultType != ''">
+                    AND resultType = #{resultType}
+                </if>
+                <if test="userID != null and userID != ''">
+                    AND userID = #{userID}
+                </if>
+                <if test="voteIDs != null and voteIDs != ''">
+                    AND voteID IN (${voteIDs})
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <!-- 根据条件插入记录 -->
+    <insert id="insert" parameterType="com.hualala.bean.VoteResult">
+        insert into voteResult(
+        <trim suffixOverrides=",">
+            <if test="voteID != null and voteID!= '' ">voteID,</if>
+            <if test="voteDetailIDs != null and voteDetailIDs != '' ">voteDetailIDs,</if>
+            <if test="resultType != null and resultType!= '' ">resultType,</if>
+            <if test="userID != null and userID!= '' ">userID,</if>
+        </trim>
+        )values(
+        <trim suffixOverrides=",">
+            <if test="voteID != null and voteID!= '' ">#{voteID},</if>
+            <if test="voteDetailIDs != null and voteDetailIDs != '' ">#{voteDetailIDs},</if>
+            <if test="resultType != null and resultType!= '' ">#{resultType},</if>
+            <if test="userID != null and userID!= '' ">#{userID},</if>
+        </trim>
+        )
+    </insert>
+
+
+    <!-- 删除记录 -->
+    <delete id="delete" parameterType="java.util.Map">
+		DELETE FROM voteResult WHERE voteID = #{voteID}
+	</delete>
+
+    <!-- 查询列表 -->
+    <select id="query" parameterType="java.util.Map" resultType="com.hualala.bean.VoteResult">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM voteResult
+        <include refid="filterParams"/>
+    </select>
+
+
+</mapper>   

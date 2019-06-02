@@ -1,0 +1,1 @@
+package com.hualala.bean;import lombok.Data;@Datapublic class MessageBoard {		private Long messageBoardID;//	private Long voteID;//投票ID	private String content;//留言内容	private Long userID;//用户ID	private Long createTime;//创建时间	private String realName;	private Integer floorLevel;//楼层	private Integer pageNum;	private Integer pageSize;}

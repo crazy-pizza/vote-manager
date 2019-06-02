@@ -1,0 +1,1 @@
+package com.hualala.bean;import lombok.Data;@Datapublic class Department {		private Long departmentID;//	private String departmentName;//科室名称	private Long leaderID;//科长用户ID	private String leaderName;	private Long itselft;	private Long userID;}

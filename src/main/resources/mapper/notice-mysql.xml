@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hualala.mapper.NoticeMapper">
+
+    <!-- 根据条件插入记录 -->
+    <insert id="insert" parameterType="com.hualala.bean.Notice">
+        insert into notice(noticeValue,createTime)values(#{noticeValue},date_format( now() ,'%Y%m%d%H%i%s'))
+    </insert>
+
+
+    <!-- 删除记录 -->
+    <delete id="delete" parameterType="java.util.Map">
+		DELETE FROM notice WHERE noticeID = #{noticeID}
+	</delete>
+
+    <!-- 查询列表 -->
+    <select id="query" parameterType="java.util.Map" resultType="com.hualala.bean.Notice">
+        SELECT noticeID,noticeValue,createTime
+        FROM notice
+        <where>
+            <trim prefixOverrides="and">
+                <if test="noticeID != null and noticeID != ''">
+                    AND noticeID = #{noticeID}
+                </if>
+            </trim>
+        </where>
+        ORDER BY createTime DESC;
+    </select>
+
+
+</mapper>   

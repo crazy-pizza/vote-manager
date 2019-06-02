@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hualala.mapper.UserMapper">
+
+    <!-- user table all fields -->
+    <sql id="Base_Column_List">
+		 userID,userName,password,sex,realName,phone,roleType,departmentID
+	</sql>
+
+    <!-- 查询条件 -->
+    <sql id="filterParams">
+        <where>
+            <trim prefixOverrides="and">
+                <if test="userID != null and userID != ''">
+                    AND userID = #{userID}
+                </if>
+                <if test="userName != null and userName != ''">
+                    AND userName = #{userName}
+                </if>
+                <if test="password != null and password != ''">
+                    AND password = #{password}
+                </if>
+                <if test="sex != null and sex != ''">
+                    AND sex = #{sex}
+                </if>
+                <if test="realName != null and realName != ''">
+                    AND realName = #{realName}
+                </if>
+                <if test="phone != null and phone != ''">
+                    AND phone = #{phone}
+                </if>
+                <if test="roleType != null and roleType != ''">
+                    AND roleType = #{roleType}
+                </if>
+                <if test="departmentID != null and departmentID != ''">
+                    AND departmentID = #{departmentID}
+                </if>
+                <if test="userIDs != null and userIDs != ''">
+                    AND userID IN (${userIDs})
+                </if>
+                <if test="searchKey != null and searchKey != '' ">
+                    AND LOWER(CONCAT(realname,';',username)) like LOWER(CONCAT('%', #{searchKey}, '%'))
+                </if>
+                <if test="filterRole != null and filterRole != ''">
+                    AND roleType != #{filterRole}
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <!-- 根据条件插入记录 -->
+    <insert id="insert" parameterType="com.hualala.bean.User" useGeneratedKeys="true" keyProperty="userID">
+        insert into user(
+        <trim suffixOverrides=",">
+            <if test="userName != null and userName!= '' ">userName,</if>
+            <if test="password != null and password!= '' ">password,</if>
+            <if test="sex != null and sex!= '' ">sex,</if>
+            <if test="realName != null and realName!= '' ">realName,</if>
+            <if test="phone != null and phone!= '' ">phone,</if>
+            <if test="roleType != null and roleType!= '' ">roleType,</if>
+            <if test="departmentID != null and departmentID!= '' ">departmentID,</if>
+        </trim>
+        )values(
+        <trim suffixOverrides=",">
+            <if test="userName != null and userName!= '' ">#{userName},</if>
+            <if test="password != null and password!= '' ">#{password},</if>
+            <if test="sex != null and sex!= '' ">#{sex},</if>
+            <if test="realName != null and realName!= '' ">#{realName},</if>
+            <if test="phone != null and phone!= '' ">#{phone},</if>
+            <if test="roleType != null and roleType!= '' ">#{roleType},</if>
+            <if test="departmentID != null and departmentID!= '' ">#{departmentID},</if>
+        </trim>
+        )
+    </insert>
+
+    <!-- 修改记录，只修改只不为空的字段 -->
+    <update id="update" parameterType="com.hualala.bean.User">
+        UPDATE user SET
+        <trim suffixOverrides=",">
+            <if test="userName != null  ">
+                userName=#{userName},
+            </if>
+            <if test="password != null  ">
+                password=#{password},
+            </if>
+            <if test="sex != null  ">
+                sex=#{sex},
+            </if>
+            <if test="realName != null  ">
+                realName=#{realName},
+            </if>
+            <if test="phone != null  ">
+                phone=#{phone},
+            </if>
+            <if test="roleType != null  ">
+                roleType=#{roleType},
+            </if>
+            <if test="departmentID != null  ">
+                departmentID=#{departmentID},
+            </if>
+        </trim>
+        WHERE userID=#{userID}
+    </update>
+
+    <!-- 删除记录 -->
+    <delete id="delete" parameterType="java.util.Map">
+		DELETE FROM user WHERE userID = #{userID}
+	</delete>
+
+    <!-- 查询列表 -->
+    <select id="query" parameterType="com.hualala.bean.User" resultType="com.hualala.bean.User">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        <include refid="filterParams"/>
+        ORDER BY departmentID ASC,roleType DESC
+    </select>
+
+    <update id="resetLeaderRole" parameterType="java.util.Map">
+        UPDATE user SET roleType = 1 WHERE departmentID=#{departmentID} AND roleType = 3
+    </update>
+
+
+</mapper>   

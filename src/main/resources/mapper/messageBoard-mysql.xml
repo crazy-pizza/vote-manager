@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hualala.mapper.MessageBoardMapper">
+
+    <!-- 根据条件插入记录 -->
+    <insert id="insert" parameterType="com.hualala.bean.MessageBoard">
+        insert into messageBoard(
+        <if test="voteID != null and voteID!= '' ">voteID,</if>
+        <if test="content != null and content!= '' ">content,</if>
+        <if test="userID != null and userID!= '' ">userID,</if>
+        createTime
+        )values(
+        <if test="voteID != null and voteID!= '' ">#{voteID},</if>
+        <if test="content != null and content!= '' ">#{content},</if>
+        <if test="userID != null and userID!= '' ">#{userID},</if>
+        date_format( now() ,'%Y%m%d%H%i%s'))
+    </insert>
+
+
+    <!-- 删除记录 -->
+    <delete id="delete" parameterType="java.util.Map">
+		DELETE FROM messageBoard WHERE messageBoardID = #{messageBoardID}
+	</delete>
+
+    <!-- 查询列表 -->
+    <select id="query" parameterType="java.util.Map" resultType="com.hualala.bean.MessageBoard">
+        SELECT m.messageBoardID,m.voteID,m.content,m.userID,m.createTime,u.realName
+        FROM messageBoard m
+        LEFT JOIN user u
+        ON m.userID = u.userID
+        <where>
+            <trim prefixOverrides="and">
+                <if test="messageBoardID != null and messageBoardID != ''">
+                    AND m.messageBoardID = #{messageBoardID}
+                </if>
+                <if test="voteID != null and voteID != ''">
+                    AND m.voteID = #{voteID}
+                </if>
+                <if test="content != null and content != ''">
+                    AND m.content = #{content}
+                </if>
+                <if test="userID != null and userID != ''">
+                    AND m.userID = #{userID}
+                </if>
+            </trim>
+        </where>
+        ORDER BY m.createTime
+    </select>
+
+
+</mapper>

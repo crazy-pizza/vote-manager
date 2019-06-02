@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hualala.mapper.DepartmentMapper">
+
+    <!-- department table all fields -->
+    <sql id="Base_Column_List">
+		 departmentID,departmentName,leaderID
+	</sql>
+
+    <!-- 查询条件 -->
+    <sql id="filterParams">
+        <where>
+            <trim prefixOverrides="and">
+                <if test="departmentID != null and departmentID != ''">
+                    AND departmentID = #{departmentID}
+                </if>
+                <if test="departmentName != null and departmentName != ''">
+                    AND departmentName = #{departmentName}
+                </if>
+                <if test="leaderID != null and leaderID != ''">
+                    AND leaderID = #{leaderID}
+                </if>
+                <if test="itselft != null and itselft != ''">
+                    AND departmentID != #{itselft}
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <!-- 根据条件插入记录 -->
+    <insert id="insert" parameterType="com.hualala.bean.Department">
+        insert into department(
+        <trim suffixOverrides=",">
+            <if test="departmentName != null and departmentName!= '' ">departmentName,</if>
+            <if test="leaderID != null and leaderID!= '' ">leaderID,</if>
+        </trim>
+        )values(
+        <trim suffixOverrides=",">
+            <if test="departmentName != null and departmentName!= '' ">#{departmentName},</if>
+            <if test="leaderID != null and leaderID!= '' ">#{leaderID},</if>
+        </trim>
+        )
+    </insert>
+
+    <!-- 修改记录，只修改只不为空的字段 -->
+    <update id="update" parameterType="com.hualala.bean.Department">
+        UPDATE department SET
+        <trim suffixOverrides=",">
+            <if test="departmentName != null  ">
+                departmentName=#{departmentName},
+            </if>
+            <if test="leaderID != null  ">
+                leaderID=#{leaderID},
+            </if>
+        </trim>
+        WHERE departmentID=#{departmentID}
+        <if test="userID != null and userID != '' ">
+            AND leaderID = #{userID}
+        </if>
+    </update>
+
+    <!-- 删除记录 -->
+    <delete id="delete" parameterType="java.util.Map">
+		DELETE FROM department WHERE departmentID = #{departmentID}
+	</delete>
+
+    <!-- 查询列表 -->
+    <select id="query" parameterType="java.util.Map" resultType="com.hualala.bean.Department">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM department
+        <include refid="filterParams"/>
+    </select>
+
+
+</mapper>   

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hualala.mapper.VoteMapper">
+
+
+    <resultMap id="voteResultMap" type="com.hualala.bean.Vote">
+        <id column="voteID" jdbcType="BIGINT" property="voteID"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="desc" jdbcType="VARCHAR" property="desc"/>
+        <result column="beginTime" jdbcType="BIGINT" property="beginTime"/>
+        <result column="endTime" jdbcType="BIGINT" property="endTime"/>
+        <result column="departmentID" jdbcType="BIGINT" property="departmentID"/>
+        <result column="createTime" jdbcType="BIGINT" property="createTime"/>
+        <result column="createBy" jdbcType="BIGINT" property="createBy"/>
+        <result column="voteType" jdbcType="TINYINT" property="voteType"/>
+        <result column="voteMultipleNum" jdbcType="TINYINT" property="voteMultipleNum"/>
+        <collection property="voteDetailList" ofType="com.hualala.bean.VoteDetail">
+            <id column="voteDetailID" jdbcType="BIGINT" property="voteDetailID"/>
+            <result column="content" jdbcType="VARCHAR" property="content"/>
+            <result column="voteID" jdbcType="VARCHAR" property="voteID"/>
+        </collection>
+    </resultMap>
+
+    <!-- 根据条件插入记录 -->
+    <insert id="insert" parameterType="com.hualala.bean.Vote" useGeneratedKeys="true" keyProperty="voteID">
+        insert into vote(
+        <if test="title != null and title!= '' ">title,</if>
+        <if test="desc != null and desc!= '' ">`desc`,</if>
+        <if test="beginTime != null and beginTime!= '' ">beginTime,</if>
+        <if test="endTime != null and endTime!= '' ">endTime,</if>
+        <if test="voteType != null and voteType!= '' ">voteType,</if>
+        <if test="departmentID != null and departmentID!= '' ">departmentID,</if>
+        <if test="createBy != null and createBy!= '' ">createBy,</if>
+        <if test="voteMultipleNum != null and voteMultipleNum!= '' ">voteMultipleNum,</if>
+        createTime
+        )values(
+        <if test="title != null and title!= '' ">#{title},</if>
+        <if test="desc != null and desc!= '' ">#{desc},</if>
+        <if test="beginTime != null and beginTime!= '' ">#{beginTime},</if>
+        <if test="endTime != null and endTime!= '' ">#{endTime},</if>
+        <if test="voteType != null and voteType!= '' ">#{voteType},</if>
+        <if test="departmentID != null and departmentID!= '' ">#{departmentID},</if>
+        <if test="createBy != null and createBy!= '' ">#{createBy},</if>
+        <if test="voteMultipleNum != null and voteMultipleNum!= '' ">#{voteMultipleNum},</if>
+        date_format( now() ,'%Y%m%d%H%i%s'))
+    </insert>
+
+    <insert id="insertVoteDetail" parameterType="com.hualala.bean.VoteDetail">
+        INSERT INTO voteDetail(`voteID`,`content`)VALUES (#{voteID},#{content})
+    </insert>
+
+    <!-- 删除记录 -->
+    <delete id="delete" parameterType="java.util.Map">
+		DELETE FROM vote WHERE voteID = #{voteID}
+	</delete>
+
+    <!-- 删除记录 -->
+    <delete id="deleteDetail" parameterType="java.util.Map">
+		DELETE FROM voteDetail WHERE voteID = #{voteID}
+	</delete>
+
+    <!-- 查询列表 -->
+    <select id="query" parameterType="java.util.Map" resultMap="voteResultMap">
+        SELECT
+        v.voteID,v.title,v.desc,v.beginTime,v.endTime,v.voteType,v.departmentID,v.createTime,v.createBy,d.content,d.voteDetailID,v.voteMultipleNum
+        FROM vote v
+        LEFT JOIN voteDetail d
+        ON v.voteID = d.voteID
+        <where>
+            <trim prefixOverrides="and">
+                <if test="voteID != null and voteID != ''">
+                    AND v.voteID = #{voteID}
+                </if>
+                <if test="title != null and title != ''">
+                    AND v.title = #{title}
+                </if>
+                <if test="desc != null and desc != ''">
+                    AND v.desc = #{desc}
+                </if>
+                <if test="voteType != null and voteType != ''">
+                    AND v.voteType = #{voteType}
+                </if>
+                <if test="departmentID != null and departmentID != ''">
+                    AND v.departmentID = #{departmentID}
+                </if>
+                <if test="createTime != null and createTime != ''">
+                    AND v.createTime = #{createTime}
+                </if>
+                <if test="searchKey != null and searchKey != '' ">
+                    AND LOWER(CONCAT(v.title,';',v.desc)) like LOWER(CONCAT('%', #{searchKey}, '%'))
+                </if>
+            </trim>
+        </where>
+    </select>
+
+    <!-- 查询列表 -->
+    <select id="queryDetailList" parameterType="java.util.Map" resultType="com.hualala.bean.VoteDetail">
+        SELECT voteDetailID,voteID,content
+        FROM voteDetail
+        <where>
+            <trim prefixOverrides="and">
+                <if test="voteDetailID != null and voteDetailID != ''">
+                    AND voteDetailID = #{voteDetailID}
+                </if>
+                <if test="voteID != null and voteID != ''">
+                    AND voteID = #{voteID}
+                </if>
+            </trim>
+        </where>
+    </select>
+
+
+</mapper>
