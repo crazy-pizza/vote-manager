@@ -11,7 +11,7 @@
  Target Server Version : 50724
  File Encoding         : 65001
 
- Date: 02/06/2019 22:12:54
+ Date: 09/06/2019 15:09:43
 */
 
 SET NAMES utf8mb4;
@@ -26,7 +26,7 @@ CREATE TABLE `department` (
   `departmentName` varchar(200) COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '科室名称',
   `leaderID` bigint(20) NOT NULL DEFAULT '0' COMMENT '科长用户ID',
   PRIMARY KEY (`departmentID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- ----------------------------
 -- Table structure for messageBoard
@@ -39,7 +39,7 @@ CREATE TABLE `messageBoard` (
   `userID` bigint(20) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `createTime` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`messageBoardID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- ----------------------------
 -- Table structure for notice
@@ -50,7 +50,7 @@ CREATE TABLE `notice` (
   `noticeValue` varchar(200) COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '公告数据',
   `createTime` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`noticeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- ----------------------------
 -- Table structure for user
@@ -66,7 +66,7 @@ CREATE TABLE `user` (
   `roleType` tinyint(10) NOT NULL DEFAULT '1' COMMENT '1-普通用户 2-临时科长 3-科长 4-管理员',
   `departmentID` bigint(20) NOT NULL DEFAULT '0' COMMENT '科室ID',
   PRIMARY KEY (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- ----------------------------
 -- Table structure for vote
@@ -84,7 +84,7 @@ CREATE TABLE `vote` (
   `createTime` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `createBy` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建人ID',
   PRIMARY KEY (`voteID`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- ----------------------------
 -- Table structure for voteDetail
@@ -95,7 +95,7 @@ CREATE TABLE `voteDetail` (
   `voteID` bigint(20) NOT NULL DEFAULT '0' COMMENT '投票ID',
   `content` varchar(200) COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '投票内容',
   PRIMARY KEY (`voteDetailID`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- ----------------------------
 -- Table structure for voteResult
@@ -108,6 +108,6 @@ CREATE TABLE `voteResult` (
   `resultType` tinyint(10) NOT NULL DEFAULT '1' COMMENT '投票类型 1-支持 2-弃权',
   `userID` varchar(200) COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '投票用户ID 已加密处理',
   PRIMARY KEY (`voteResultID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 SET FOREIGN_KEY_CHECKS = 1;
